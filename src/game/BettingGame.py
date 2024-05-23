@@ -1,7 +1,7 @@
 import random
 import time
-from src.BettingRound import BettingRound
-from src.Player import Player
+from src.game.BettingRound import BettingRound
+from src.Agent.Agent import Agent
 
 
 class BettingGame:
@@ -36,7 +36,7 @@ class BettingGame:
         return BettingRound(self.coins_per_round, random.randint(0, self.coins_per_round),
                             max_bet=self.max_bet_per_round)
 
-    def play_game(self, player: Player) -> int:
+    def play_game(self, agent: Agent) -> int:
         """
         Plays the game
 
@@ -56,7 +56,7 @@ class BettingGame:
             time.sleep(2)
 
             print("Asking the player if they want to take the bet")
-            take_round = player.play_round(betting_round, past_rounds=self.past_rounds)
+            take_round = agent.play_round(betting_round, past_rounds=self.past_rounds)
 
             if take_round:
                 print("Taking the bet")
@@ -74,6 +74,8 @@ class BettingGame:
             else:
                 print("Not taking the bet")
                 continue
+
+            agent.update_agent(betting_round, self)
 
             self.curr_round += 1
 
