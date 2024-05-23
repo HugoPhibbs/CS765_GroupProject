@@ -1,19 +1,24 @@
 from typing import List
 from abc import ABC
+from src.EmotionMap import EmotionMap
 
 class Statement(ABC):
     '''
     A base class for all statements used.
     '''
-    def __init__(self, statement: str):
+    def __init__(self, statement: str, agent_map: EmotionMap):
         self.statement = statement
+        self.agent_map = agent_map
+
+    def __hash__(self):
+        return hash(self.statement)
 
 class AtomicStatement(Statement):
-    def __init__(self, statement: str):
+    def __init__(self, statement: str, agent_map: EmotionMap):
         '''
         A class representing an atomic statement.
         '''
-        super().__init__(statement)
+        super().__init__(statement, agent_map)
 
     def statement(self):
         return self.statement
@@ -25,12 +30,12 @@ class AtomicStatement(Statement):
         return hash(self.statement)
 
 class ConditionalStatement(Statement):
-    def __init__(self, statement: str, conditions: List[Statement]):
+    def __init__(self, statement: str, agent_map: EmotionMap, conditions: List[Statement]):
         '''
         A class representing a statement that would be true
         if other statements are present.
         '''
-        super().__init__(statement)
+        super().__init__(statement, agent_map)
         self.conditions = conditions
 
     def evaluate(self, conditions):
@@ -46,10 +51,7 @@ class ConditionalStatement(Statement):
                     if statement.evaluate(conditions):
                         present += 1
             
-        if present == len(self.conditions):
-            return True
-        else:
-            return False
+        return present == len(self.conditions)
 
     def __hash__(self):
         return hash(self.statement + str(self.conditions))
@@ -57,6 +59,7 @@ class ConditionalStatement(Statement):
 
 
 class StatementList:
+    
     def __init__(self):
         self.statements = []
 
@@ -65,17 +68,28 @@ class StatementList:
             raise ValueError("adding a non-Statement")
         self.statements.append(statement)
 
+    def remove(self, statement):
+        self.statements.remove(statement)
+
     def query(self, statement_query: str):
+        '''
+        Queries if a statement is true.
+
+        Returns numbers to consider for repeated atomic statements.
+
+        0 means that the queried statement is not present. If higher then the statement is present.
+        '''
+        count = 0
         for statement in self.statements:
             if statement.statement == statement_query:
                 if type(statement) is AtomicStatement:
-                    return True
+                    count += 1
                 
                 elif type(statement) is ConditionalStatement:
                     if statement.evaluate(self.statements):
-                        return True
+                        count += 1
                 
-        return False
+        return count
                 
 ##a = AtomicStatement("a")
 ##l = StatementList()
