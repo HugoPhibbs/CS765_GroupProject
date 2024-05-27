@@ -90,6 +90,9 @@ class StatementList:
                         count += 1
                 
         return count
+
+    def __iter__(self):
+        return iter(self.statements)
                 
 ##a = AtomicStatement("a")
 ##l = StatementList()

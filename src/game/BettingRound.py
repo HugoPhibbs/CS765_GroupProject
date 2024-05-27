@@ -3,7 +3,6 @@ import math
 
 
 class BettingRound:
-    win = None # Whether the player won the round
 
     def __init__(self, num_coins, num_heads, max_bet):
         """
@@ -16,6 +15,7 @@ class BettingRound:
         self.num_coins = num_coins
         self.num_heads = num_heads
         self.max_bet = max_bet
+        self.win = None # Whether the player won the round
 
     def __repr__(self):
         return f"n_coins: {self.num_coins}, n_heads: {self.num_heads}, p_win: {self.p_win()}, e_v: {self.expected_value()}, bet: {self.bet_amount()}"

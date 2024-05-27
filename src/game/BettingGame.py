@@ -1,21 +1,57 @@
 import random
 import time
 from src.game.BettingRound import BettingRound
-from src.Agent.Agent import Agent
+from src.agent.Agent import Agent
 
 
 class BettingGame:
-    curr_round = 0
-    past_rounds = []
+
 
     def __init__(self, num_rounds=10, coins_per_round=3, starting_cash=100, max_bet_per_round=None):
         self.num_rounds = num_rounds
         self.coins_per_round = coins_per_round
         self.starting_cash = starting_cash
         self.max_bet_per_round = max_bet_per_round if not max_bet_per_round else starting_cash // 2
+        self.curr_round = 0
+        self.past_rounds = []
 
     def __repr__(self):
         pass  # TODO
+
+    def query_winstreak(self):
+        count = 0
+        for _ in range(len(self.past_rounds)-1, -1,-1):
+            if self.past_rounds[count].win:
+                count += 1
+            else:
+                break
+        return count
+
+    def query_lossstreak(self):
+        count = 0
+        for _ in range(len(self.past_rounds)-1, -1,-1):
+            if not self.past_rounds[count].win:
+                count += 1
+            else:
+                break
+        return count
+
+    def query_win_count(self):
+        count = 0
+        for round in self.past_rounds:
+            if round.win:
+                count += 1
+        return count
+
+    def query_loss_count(self):
+        count = 0
+        for round in self.past_rounds:
+            if not round.win:
+                count += 1
+        return count
+
+    def most_recent_round_won(self):
+        return self.past_rounds[-1].win
 
     def reset_game(self) -> None:
         """

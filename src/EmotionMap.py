@@ -25,8 +25,3 @@ class EmotionMap:
     # def query_agent(self, agent_type):
     #     return self.emotion_map[agent_type]
     
-    
-
-emotion_map = {
-    Conditional
-}
