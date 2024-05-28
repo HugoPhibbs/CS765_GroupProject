@@ -1,12 +1,14 @@
 from src.engines.emotion.EmotionEngine import EmotionEngine
 from src.agent.EmotionChange import EmotionChange
-from src.agent.Agent import Agent
-from src.game.BettingGame import BettingGame
-from src.game.BettingRound import BettingRound
-from abc import ABC, abstractmethod
 
 class EmotionEngineFreeSpirit(EmotionEngine):
     @staticmethod
-    def evaluate(game: BettingGame, round : BettingRound) -> EmotionChange:
-        # Parameters can be static - set when initialising the game
-        pass # TODO
+    def evaluate(game, round) -> EmotionChange:
+        change = EmotionChange()
+        if game.most_recent_round_won:
+            change.happy_incr(1)
+        else:
+            change.sad_incr(1)
+        change.happy_incr(0.5 * game.query_winstreak() - 0.1 * game.query_lossstreak())
+        change.sad_incr(0.1 * game.query_lossstreak() - 0.5 * game.query_winstreak() )
+        return change

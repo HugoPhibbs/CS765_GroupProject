@@ -1,6 +1,6 @@
 class EmotionChange:
 
-    def __init__(self, happy, sad, fearful, angry) -> None:
+    def __init__(self, happy=0, sad=0, fearful=0, angry=0) -> None:
         self.happy = happy
         self.sad = sad
         self.fearful = fearful

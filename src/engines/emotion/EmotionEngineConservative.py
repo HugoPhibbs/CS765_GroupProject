@@ -1,13 +1,9 @@
 from src.engines.emotion.EmotionEngine import EmotionEngine
 from src.agent.EmotionChange import EmotionChange
-from src.agent.Agent import Agent
-from src.game.BettingGame import BettingGame
-from src.game.BettingRound import BettingRound
-from abc import ABC, abstractmethod
 
 class EmotionEngineConservative(EmotionEngine):
     @staticmethod
-    def evaluate(game: BettingGame, round : BettingRound) -> EmotionChange:
+    def evaluate(game, round) -> EmotionChange:
         emotion_change = EmotionChange()
         if game.most_recent_round_won:
             emotion_change.fearful_incr(- 1 + game.query_loss_count() / 3)

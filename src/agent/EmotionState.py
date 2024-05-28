@@ -1,5 +1,3 @@
-from src.agent.EmotionChange import EmotionChange
- 
 class EmotionState:
 
     def __init__(self, happy=0, sad=0, angry=0, fearful=0):
@@ -8,7 +6,7 @@ class EmotionState:
         self.angry = angry
         self.fearful = fearful
 
-    def update(self, emotion_change: EmotionChange):
+    def update(self, emotion_change):
         self.happy += emotion_change.happy
         self.sad += emotion_change.sad
         self.angry += emotion_change.angry
