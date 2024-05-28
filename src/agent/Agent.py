@@ -1,12 +1,5 @@
 from src.engines.action import ActionEngineConservative, ActionEngineFreeSpirit, ActionEngineRational, ActionEngineTempermental
-from src.game.BettingRound import BettingRound
-from src.game.BettingGame import BettingGame
-from customLogic import Statement, StatementList, AtomicStatement
-from State import State
 from src.agent.EmotionState import EmotionState
-from src.agent.AgentType import AgentType
-from src.engines.emotion.EmotionEngine import EmotionEngine
-from src.engines.action.ActionEngine import ActionEngine
 
 from src.engines.emotion.EmotionEngineRational import EmotionEngineRational
 from src.engines.emotion.EmotionEngineConservative import EmotionEngineConservative
@@ -16,15 +9,15 @@ from src.engines.emotion.EmotionEngineFreeSpirit import EmotionEngineFreeSpirit
 
 class Agent:
     
-    def __init__(self, agent_type: AgentType, emotion_state : EmotionState):
+    def __init__(self, agent_type, emotion_state=None):
         """
         A player object
         """
         self.agent_type = agent_type 
-        self.emotion_state = emotion_state
-        self.set_engines()
+        self.emotion_state = emotion_state if emotion_state is not None else EmotionState()
+        self.__set_engines()
 
-    def set_engines(self):
+    def __set_engines(self):
         if self.agent_type == 0:
             self.emotion_engine = EmotionEngineRational
             self.action_engine = ActionEngineRational
@@ -45,15 +38,15 @@ class Agent:
             raise ValueError(f"Invalid agent type {self.agent_type}")
 
 
-    def update_agent(self, round : BettingRound, game: BettingGame) -> None:
+    def update_agent(self, round, game) -> None:
         """
         Updates the internal state the agent based on the current game state
         
         """
-        emotionChange = self.emotion_engine.evaluate(self, game, round)
+        emotionChange = self.emotion_engine.evaluate(game, round)
         self.emotion_state.update(emotionChange)
 
-    def play_round(self, round : BettingRound, game: BettingGame) -> bool:
+    def play_round(self, round, game) -> bool:
         """
         4. Pass in current game state, current betting around, and the game into a statements engine again
         5. This time the statement engine evaluates:
