@@ -43,7 +43,15 @@ class BettingRound:
         :return: the expected value of the round
         """
         p_win = self.p_win()
-        return self.bet * p_win + (-self.bet) * (1 - p_win)
+        return self.bet * p_win + (-self.bet) * self.p_lose()
+
+    def p_lose(self) -> float:
+        """
+        Probability of losing the round
+
+        :return: the probability of losing the round
+        """
+        return 1 - self.p_win()
 
     def p_win(self) -> float:
         """

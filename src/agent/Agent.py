@@ -1,9 +1,10 @@
 from src.engines.action import ActionEngineConservative, ActionEngineFreeSpirit, ActionEngineRational, ActionEngineTempermental
 from src.agent.EmotionState import EmotionState
 
+from src.agent.AgentType import AgentType
 from src.engines.emotion.EmotionEngineRational import EmotionEngineRational
 from src.engines.emotion.EmotionEngineConservative import EmotionEngineConservative
-from src.engines.emotion.EmotionEngineTempermental import EmotionEngineTempermental
+from src.engines.emotion.EmotionEngineTemperamental import EmotionEngineTemperamental
 from src.engines.emotion.EmotionEngineFreeSpirit import EmotionEngineFreeSpirit
 
 
@@ -18,19 +19,19 @@ class Agent:
         self.__set_engines()
 
     def __set_engines(self):
-        if self.agent_type == 0:
+        if self.agent_type == AgentType.RATIONAL:
             self.emotion_engine = EmotionEngineRational
             self.action_engine = ActionEngineRational
-        elif self.agent_type == 1:
+        elif self.agent_type == AgentType.FREE_SPIRIT:
             self.emotion_engine = EmotionEngineFreeSpirit
             self.action_engine = ActionEngineFreeSpirit
-        elif self.agent_type == 2:
+        elif self.agent_type == AgentType.CONSERVATIVE:
             self.emotion_engine = EmotionEngineConservative
             self.action_engine = ActionEngineConservative
-        elif self.agent_type == 3:
-            self.emotion_engine = EmotionEngineTempermental
+        elif self.agent_type == AgentType.TEMPERAMENTAL:
+            self.emotion_engine = EmotionEngineTemperamental
             self.action_engine = ActionEngineTempermental
-        elif self.agent_type == 4:
+        elif self.agent_type == AgentType.TEMPERAMENTAL:
             # self.emotion_engine = EmotionEngineRandom
             # self.action_engine = ActionEngineRandom
             pass

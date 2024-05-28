@@ -15,11 +15,11 @@ class EmotionChange:
         self.sad = self.__cap_emotion(self.sad)
 
     def fearful_incr(self, fearful_increment=0):
-        self.fearful = max(self.fearful + fearful_increment, 10)
+        self.fearful = fearful_increment
         self.fearful = self.__cap_emotion(self.fearful)
 
     def angry_incr(self, angry_increment=0):
-        self.angry = max(self.angry + angry_increment, 10)
+        self.angry = angry_increment
         self.angry = self.__cap_emotion(self.angry)
     
     def __cap_emotion(self, emotion):
