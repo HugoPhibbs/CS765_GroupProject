@@ -7,11 +7,12 @@ from src.agent.Agent import Agent
 class BettingGame:
 
 
-    def __init__(self, num_rounds=10, coins_per_round=3, starting_cash=100, max_bet_per_round=None):
+    def __init__(self, num_rounds=10, coins_per_round=3, starting_cash=100, max_bet_per_round=None, min_bet=5):
         self.num_rounds = num_rounds
         self.coins_per_round = coins_per_round
         self.starting_cash = starting_cash
-        self.max_bet_per_round = max_bet_per_round if not max_bet_per_round else starting_cash // 2
+        self.max_bet_per_round = max_bet_per_round if max_bet_per_round is not None else starting_cash // 2
+        self.min_bet = min_bet
         self.curr_round = 0
         self.past_rounds = []
 
@@ -49,6 +50,9 @@ class BettingGame:
             if not round.win:
                 count += 1
         return count
+    
+    def query_win_percentage(self):
+        return self.query_win_count() / len(self.past_rounds)
 
     def most_recent_round_won(self):
         return self.past_rounds[-1].win
@@ -62,17 +66,19 @@ class BettingGame:
         self.curr_round = 0
         self.past_rounds = []
 
-    def generate_next_round(self) -> BettingRound:
+    def generate_next_round(self, curr_agent_cash=float("inf")) -> BettingRound:
         """
         Generates a new betting round
 
         :return:
         """
         self.curr_round += 1
-        return BettingRound(self.coins_per_round, random.randint(0, self.coins_per_round),
-                            max_bet=self.max_bet_per_round)
+        max_bet = min(self.max_bet_per_round, curr_agent_cash) # Player can't bet more than they have
 
-    def play_game(self, agent: Agent) -> int:
+        return BettingRound(self.coins_per_round,
+                            max_bet=max_bet)
+
+    def play_game(self, agent: Agent, skip_time_outs = False) -> int:
         """
         Plays the game
 
@@ -85,20 +91,33 @@ class BettingGame:
 
         curr_cash = self.starting_cash
 
+        curr_round = 0
+
         for _ in range(self.num_rounds):
+        
+            if curr_cash < self.min_bet:
+                print("Not enough cash to play the next round")
+                break
+
+            if curr_cash <= 0:
+                print("Player has no more cash to play the game")
+                break
+
+            curr_round += 1
+
             print(f"Round: {self.curr_round}")
-            betting_round = self.generate_next_round()
+            betting_round = self.generate_next_round(curr_agent_cash=curr_cash)
             print(betting_round)
-            time.sleep(2)
+            if not skip_time_outs: time.sleep(2)
 
             print("Asking the player if they want to take the bet")
-            take_round = agent.play_round(betting_round, past_rounds=self.past_rounds)
+            take_round = agent.play_round(betting_round, game=self)
 
             if take_round:
                 print("Taking the bet")
                 print("Simulating the round")
                 cash_win = betting_round.simulate_round()
-                time.sleep(2)
+                if not skip_time_outs: time.sleep(2)
 
                 if betting_round.is_win():
                     print(f"Won the round: {cash_win}")
@@ -113,6 +132,13 @@ class BettingGame:
 
             agent.update_agent(betting_round, self)
 
+            print(f"Current cash: {curr_cash}")
+
             self.curr_round += 1
 
+        self.__print_game_summary(curr_cash, self.curr_round)
+
         return curr_cash
+    
+    def __print_game_summary(self, curr_cash, rounds_played):
+        print(f"\nSummary:\nRounds: {rounds_played}\nPlayer cash (start/final): {self.starting_cash}/{curr_cash}\nWins: {self.query_win_count()}\nLosses: {self.query_loss_count()}\nWin percentage: {self.query_win_percentage():.2f}")

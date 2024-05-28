@@ -4,23 +4,36 @@ import math
 
 class BettingRound:
 
-    def __init__(self, num_coins, num_heads, max_bet):
+    def __init__(self, num_coins, max_bet, type = "greater_than_or_equal_to"):
         """
         A betting round
 
         :param num_coins: number of coins in the round
         :param num_heads: number of heads in this round for the player to win
         :param max_bet: maximum bet amount for the round
+        :param type: type of betting round. E.g. "greater_than_or_equal_to", "less_than", "equal_to", for number of heads in a round
         """
         self.num_coins = num_coins
-        self.num_heads = num_heads
         self.max_bet = max_bet
         self.win = None # Whether the player won the round
+        self.type = type
+        self.__set_num_heads()
+        self.__set_bet_amount()
+
+    def __set_num_heads(self):
+        if self.type == "greater_than_or_equal_to":
+            self.num_heads = random.randint(1, self.num_coins - 1)
+        elif self.type == "less_than":
+            self.num_heads = random.randint(1, self.num_coins)
+        elif self.type == "equal_to":
+            self.num_heads = random.randint(0, self.num_coins)
+        else:
+            raise ValueError(f"Invalid type of betting round, type {self.type}")
 
     def __repr__(self):
-        return f"n_coins: {self.num_coins}, n_heads: {self.num_heads}, p_win: {self.p_win()}, e_v: {self.expected_value()}, bet: {self.bet_amount()}"
+        return f"n_coins: {self.num_coins}, n_heads: {self.num_heads}, p_win: {self.p_win()}, e_v: {self.expected_value()}, bet: {self.bet}, type: {self.type}"
 
-    def expected_value(self, bet=1) -> float:
+    def expected_value(self) -> float:
         """
         Expected value of the round
 
@@ -30,7 +43,7 @@ class BettingRound:
         :return: the expected value of the round
         """
         p_win = self.p_win()
-        return bet * p_win + (-bet) * (1 - p_win)
+        return self.bet * p_win + (-self.bet) * (1 - p_win)
 
     def p_win(self) -> float:
         """
@@ -42,6 +55,26 @@ class BettingRound:
         """
         n = self.num_coins
         k = self.num_heads
+        if self.type == "greater_than_or_equal_to":
+            return self.__p_win_greater_than_or_equal_to()
+        elif self.type == "less_than":
+            return 1 - self.__p_win_greater_than_or_equal_to()
+        elif self.type == "equal_to":
+            return self.__dice_binomial(n, k)
+        else:
+            raise ValueError(f"Invalid type of betting round, type {self.type}")
+    
+    def __p_win_greater_than_or_equal_to(self):
+        n = self.num_coins
+        k = self.num_heads
+        return sum([self.__dice_binomial(n, i) for i in range(k, n+1)])
+    
+    def __dice_binomial(self, n, k):
+        """Chance of getting exactly k heads in n coin flips
+
+        :param n: n coin flips
+        :param k: k heads
+        """
         return math.comb(n, k) * (0.5 ** k) * (0.5 ** (n - k))
 
     def is_win(self) -> bool:
@@ -56,13 +89,13 @@ class BettingRound:
             raise ValueError("The round has not been played yet")
         return self.win
 
-    def bet_amount(self) -> int:
+    def __set_bet_amount(self) -> int:
         """
-        Randomly generate a bet amount
+        Randomly set a bet amount
 
         :return: int for a bet amount
         """
-        return random.randint(1, self.max_bet)
+        self.bet = random.randint(0, self.max_bet)
 
     def simulate_round(self) -> int:
         """
@@ -70,12 +103,11 @@ class BettingRound:
         :param bet: amount to bet
         :return: amount won or lost
         """
-        bet = self.bet_amount()
-        trials = [random.choice(["H", "T"]) for _ in range(self.num_heads)]
-        heads_count = trials.count("H")
-        if heads_count > self.num_heads:
+        p_res = random.random()
+
+        if p_res < self.p_win():
             self.win = True
-            return bet
+            return self.bet
         else:
             self.win = False
-            return -bet
+            return -self.bet
