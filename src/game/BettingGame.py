@@ -90,7 +90,7 @@ class BettingGame:
         """
         self.__print_game_intro(agent)
 
-        print("\nStarting the game")
+        print(f"\n{self.__bold_str("Starting the game")}")
 
         curr_cash = self.starting_cash
 
@@ -158,6 +158,7 @@ class BettingGame:
         print(
             textwrap.dedent(
                 f"""
+                {self.__bold_str("Parameters")}
                 Number of rounds: {self.num_rounds}, 
                 Coins per round: {self.coins_per_round}, 
                 Starting_cash: {self.starting_cash}
