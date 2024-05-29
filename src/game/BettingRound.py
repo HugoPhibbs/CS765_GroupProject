@@ -31,7 +31,17 @@ class BettingRound:
             raise ValueError(f"Invalid type of betting round, type {self.type}")
 
     def __repr__(self):
-        return f"n_coins: {self.num_coins}, n_heads: {self.num_heads}, p_win: {self.p_win()}, e_v: {self.expected_value()}, bet: {self.bet}, type: {self.type}"
+        return f"Bet: {self.___bet_to_str()}\nP(win): {self.p_win():.2f}, E(X): {self.expected_value():.2f}"
+    
+    def ___bet_to_str(self):
+        if self.type == "greater_than_or_equal_to":
+            return f"${self.bet} on getting at least {self.num_heads} heads from {self.num_coins} coins"
+        elif self.type == "less_than":
+            return f"${self.bet} on getting less than {self.num_heads} heads from {self.num_coins} coins"
+        elif self.type == "equal_to":
+            return f"${self.bet} on getting exactly {self.num_heads} heads from {self.num_coins} coins"
+        else:
+            raise ValueError(f"Invalid type of betting round, type {self.type}")
 
     def expected_value(self) -> float:
         """
@@ -103,7 +113,7 @@ class BettingRound:
 
         :return: int for a bet amount
         """
-        self.bet = random.randint(0, self.max_bet)
+        self.bet = random.randint(1, self.max_bet)
 
     def simulate_round(self) -> int:
         """

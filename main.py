@@ -2,7 +2,14 @@ from src.agent.Agent import Agent
 from src.agent.AgentType import AgentType
 from src.game.BettingGame import BettingGame
 
-rationalAgent = Agent(AgentType.TEMPERAMENTAL)
-game = BettingGame(30, 10, 100)
+agent = Agent(AgentType.RATIONAL) 
 
-game.play_game(rationalAgent, skip_time_outs=True)
+# agent = Agent(AgentType.CONSERVATIVE)
+
+game = BettingGame(
+    num_rounds = 10, 
+    coins_per_round = 10,
+    starting_cash =  100
+    )
+
+game.play_game(agent, skip_time_outs=False) 

@@ -7,7 +7,7 @@ from src.agent.Agent import Agent
 
 class BettingGame:
 
-    def __init__(self, num_rounds=10, coins_per_round=3, starting_cash=100, max_bet_per_round=None, min_bet=5):
+    def __init__(self, num_rounds=10, coins_per_round=3, starting_cash=100, max_bet_per_round=None, min_bet=5, round_type="greater_than_or_equal_to"):
         self.num_rounds = num_rounds
         self.coins_per_round = coins_per_round
         self.starting_cash = starting_cash
@@ -15,6 +15,7 @@ class BettingGame:
         self.min_bet = min_bet
         self.curr_round = 0
         self.past_rounds = []
+        self.round_type = round_type
 
     def __repr__(self):
         pass  # TODO
@@ -77,7 +78,8 @@ class BettingGame:
         max_bet = min(self.max_bet_per_round, curr_agent_cash)  # Player can't bet more than they have
 
         return BettingRound(self.coins_per_round,
-                            max_bet=max_bet)
+                            max_bet=max_bet, 
+                            type=self.round_type)
 
     def play_game(self, agent: Agent, skip_time_outs=False) -> int:
         """
@@ -86,9 +88,9 @@ class BettingGame:
         :param player: Player to play the game
         :return: the final cash amount of the player after the game
         """
-        print("Starting the game")
-        print(
-            f"Params: num_rounds: {self.num_rounds}, coins_per_round: {self.coins_per_round}, starting_cash: {self.starting_cash}")
+        self.__print_game_intro(agent)
+
+        print("\nStarting the game")
 
         curr_cash = self.starting_cash
 
@@ -96,59 +98,85 @@ class BettingGame:
 
         for _ in range(self.num_rounds):
 
+            print("-" * 50)
+            if not skip_time_outs: time.sleep(1)
+
             if curr_cash < self.min_bet:
                 print("Not enough cash to play the next round")
                 break
 
             if curr_cash <= 0:
-                print("Player has no more cash to play the game")
+                print("Agent has no more cash to play the game")
                 break
 
             self.curr_round += 1
 
-            print(f"Round: {self.curr_round}")
+            round_str = f"Round: {self.curr_round}/{self.num_rounds}"
+
+            print(f"\n{self.__bold_str(round_str)}\n")
             betting_round = self.generate_next_round(curr_agent_cash=curr_cash)
             print(betting_round)
-            if not skip_time_outs: time.sleep(2)
+            if not skip_time_outs: time.sleep(1)
 
-            print("Asking the player if they want to take the bet")
+            print("Asking the agent if they want to take the bet")
+            if not skip_time_outs: time.sleep(1)
             take_round = agent.play_round(betting_round, game=self)
 
             if take_round:
-                print("Taking the bet")
+                print(f"Agent {self.__bold_str("is")} taking the bet")
                 print("Simulating the round")
                 cash_win = betting_round.simulate_round()
-                if not skip_time_outs: time.sleep(2)
+                if not skip_time_outs: time.sleep(1)
 
                 if betting_round.is_win():
-                    print(f"Won the round: {cash_win}")
+                    print(f"{self.__bold_str("Won")} the round, won {cash_win}")
                 else:
-                    print(f"Lost the round: {cash_win}")
+                    print(f"{self.__bold_str("Lost")} the round, lost {-cash_win}")
 
                 self.past_rounds.append(betting_round)
                 curr_cash += cash_win
                 num_rounds_taken += 1
             else:
-                print("Not taking the bet")
+                print(f"Agent {self.__bold_str("not")} taking the bet")
+
+                print(f"\nCurrent cash: {curr_cash}")
+
                 continue
 
             agent.update_agent(betting_round, self)
 
-            print(f"Current cash: {curr_cash}")
+            print(f"\nCurrent cash: {curr_cash}")
 
         self.__print_game_summary(curr_cash, self.curr_round, num_rounds_taken, agent)
 
         return curr_cash
+    
+    def __bold_str(self, s):
+        return f"\033[1m{s}\033[0m"
+    
+    def __print_game_intro(self, agent):
+        print(
+            textwrap.dedent(
+                f"""
+                Number of rounds: {self.num_rounds}, 
+                Coins per round: {self.coins_per_round}, 
+                Starting_cash: {self.starting_cash}
+                Agent Type: {repr(agent.agent_type)}
+                Round Types: {self.round_type}
+                """
+            )
+        )
 
     def __print_game_summary(self, curr_cash, rounds_played, num_rounds_taken, agent):
         print(
             textwrap.dedent(
                 f"""
-                Summary:
-                Player Type: {repr(agent.agent_type)}
+                {"-" * 50}
+                {self.__bold_str("Game Summary")}:
+                Agent Type: {repr(agent.agent_type)}
                 Rounds: {rounds_played}
                 Rounds taken: {num_rounds_taken}
-                Player cash (start/final): {self.starting_cash}/{curr_cash}
+                Agent cash (start/final): {self.starting_cash}/{curr_cash}
                 Wins: {self.query_win_count()}
                 Losses: {self.query_loss_count()}
                 Win percentage: {self.query_win_percentage():.2f}
