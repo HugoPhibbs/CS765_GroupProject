@@ -2,7 +2,7 @@ from src.agent.Agent import Agent
 from src.agent.AgentType import AgentType
 from src.game.BettingGame import BettingGame
 
-agent = Agent(AgentType.RATIONAL) 
+agent = Agent(agent_type = AgentType.RATIONAL) 
 
 # agent = Agent(AgentType.CONSERVATIVE)
 
@@ -12,4 +12,7 @@ game = BettingGame(
     starting_cash =  100
     )
 
-game.play_game(agent, skip_time_outs=False) 
+game.play_game(
+    agent=agent, 
+    skip_time_outs=False
+    ) 
