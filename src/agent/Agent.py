@@ -1,4 +1,4 @@
-from src.engines.action import ActionEngineConservative, ActionEngineFreeSpirit, ActionEngineRational, ActionEngineTempermental
+from src.engines.action import ActionEngineConservative, ActionEngineFreeSpirit, ActionEngineRational, ActionEngineTemperamental
 from src.agent.EmotionState import EmotionState
 
 from src.agent.AgentType import AgentType
@@ -30,7 +30,7 @@ class Agent:
             self.action_engine = ActionEngineConservative
         elif self.agent_type == AgentType.TEMPERAMENTAL:
             self.emotion_engine = EmotionEngineTemperamental
-            self.action_engine = ActionEngineTempermental
+            self.action_engine = ActionEngineTemperamental
         elif self.agent_type == AgentType.TEMPERAMENTAL:
             # self.emotion_engine = EmotionEngineRandom
             # self.action_engine = ActionEngineRandom

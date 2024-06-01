@@ -16,7 +16,5 @@ class EmotionEngineConservative(EmotionEngine):
             emotion_change.happy_incr(- 1 + 1 / 3)
             emotion_change.sad_incr(2)
             emotion_change.angry_incr(0.5)
-
-        emotion_change.fearful += (game.query_loss_count() - game.query_win_count()) * 0.2
-
+            
         return emotion_change

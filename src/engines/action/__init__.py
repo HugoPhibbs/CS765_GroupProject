@@ -3,4 +3,4 @@ from src.engines.action.ActionEngineConservative import ActionEngineConservative
 from src.engines.action.ActionEngineRandom import ActionEngineRandom
 from src.engines.action.ActionEngineRational import ActionEngineRational
 from src.engines.action.ActionEngineFreeSpirit import ActionEngineFreeSpirit
-from src.engines.action.ActionEngineTempermental import ActionEngineTempermental
+from src.engines.action.ActionEngineTemperamental import ActionEngineTemperamental

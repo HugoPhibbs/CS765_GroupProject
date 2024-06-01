@@ -114,6 +114,9 @@ class BettingGame:
             round_str = f"Round: {self.curr_round}/{self.num_rounds}"
 
             print(f"\n{self.__bold_str(round_str)}\n")
+
+            print(agent.emotion_state.__repr__() + "\n")
+
             betting_round = self.generate_next_round(curr_agent_cash=curr_cash)
             print(betting_round)
             if not skip_time_outs: time.sleep(1)

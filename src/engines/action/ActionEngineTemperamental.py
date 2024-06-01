@@ -1,7 +1,7 @@
 from src.engines.action.ActionEngine import ActionEngine
 
 
-class ActionEngineTempermental(ActionEngine):
+class ActionEngineTemperamental(ActionEngine):
     
     @staticmethod
     def evaluate(agent, game, round):
@@ -18,7 +18,7 @@ class ActionEngineTempermental(ActionEngine):
 
         if agent.emotion_state.fearful == 10:
             return False
-        
+
         elif agent.emotion_state.fearful >= 5:
             chance -= 0.1 * game.query_lossstreak()
         

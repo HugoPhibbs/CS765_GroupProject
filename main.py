@@ -3,8 +3,8 @@ from src.agent.AgentType import AgentType
 from src.game.BettingGame import BettingGame
 
 # Creating an agent
-agent = Agent(agent_type = AgentType.RATIONAL) 
-# agent = Agent(AgentType.CONSERVATIVE)
+# agent = Agent(agent_type = AgentType.RATIONAL) 
+agent = Agent(AgentType.CONSERVATIVE)
 
 # Creating a game instance
 game = BettingGame(

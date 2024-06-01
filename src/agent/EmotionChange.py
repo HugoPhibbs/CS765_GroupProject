@@ -23,7 +23,7 @@ class EmotionChange:
         self.angry = self.__cap_emotion(self.angry)
     
     def __cap_emotion(self, emotion):
-        if emotion < 0:
+        if emotion <= 0:
             return 0
         elif emotion > 10:
             return 10

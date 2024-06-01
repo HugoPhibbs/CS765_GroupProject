@@ -13,4 +13,4 @@ class EmotionState:
         self.fearful += emotion_change.fearful
 
     def __repr__(self):
-        return f"EmotionState(happy={self.happy}, sad={self.sad}, angry={self.angry}, fearful={self.fearful})"
+        return f"EmotionState(happy={self.happy:.2f}, sad={self.sad:.2f}, angry={self.angry:.2f}, fearful={self.fearful:.2f})"
