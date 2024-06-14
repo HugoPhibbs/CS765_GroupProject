@@ -99,7 +99,7 @@ class BettingGame:
         for _ in range(self.num_rounds):
 
             print("-" * 50)
-            if not skip_time_outs: time.sleep(1)
+            if not skip_time_outs: time.sleep(0.5)
 
             if curr_cash < self.min_bet:
                 print("Not enough cash to play the next round")
@@ -119,17 +119,17 @@ class BettingGame:
 
             betting_round = self.generate_next_round(curr_agent_cash=curr_cash)
             print(betting_round)
-            if not skip_time_outs: time.sleep(1)
+            if not skip_time_outs: time.sleep(0.5)
 
             print("Asking the agent if they want to take the bet")
-            if not skip_time_outs: time.sleep(1)
+            if not skip_time_outs: time.sleep(0.5)
             take_round = agent.play_round(betting_round, game=self)
 
             if take_round:
                 print(f"Agent {self.__bold_str("is")} taking the bet")
                 print("Simulating the round")
                 cash_win = betting_round.simulate_round()
-                if not skip_time_outs: time.sleep(1)
+                if not skip_time_outs: time.sleep(0.5)
 
                 if betting_round.is_win():
                     print(f"{self.__bold_str("Won")} the round, won {cash_win}")

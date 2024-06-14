@@ -2,9 +2,10 @@ from src.agent.Agent import Agent
 from src.agent.AgentType import AgentType
 from src.game.BettingGame import BettingGame
 
-# Creating an agent
-# agent = Agent(agent_type = AgentType.RATIONAL) 
-agent = Agent(AgentType.CONSERVATIVE)
+# Creating an Agent
+# agent = Agent(agent_type = AgentType.RATIONAL)
+# agent = Agent(agent_type = AgentType.CONSERVATIVE)
+agent = Agent(agent_type = AgentType.TEMPERAMENTAL)
 
 # Creating a game instance
 game = BettingGame(
@@ -17,4 +18,5 @@ game = BettingGame(
 game.play_game(
     agent=agent, 
     skip_time_outs=False
-    ) 
+    )
+
